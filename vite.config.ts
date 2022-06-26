@@ -6,7 +6,7 @@ const manifest = defineManifest({
   manifest_version: 3,
   name: "Bookmark Nickname",
   version: "1.0.0",
-  permissions: ["bookmarks"],
+  permissions: ["bookmarks", "tabs"],
   action: {
     default_popup: "index.html",
   },
