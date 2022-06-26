@@ -1,45 +1,40 @@
-import { useState } from 'react'
-import logo from './logo.svg'
-import './App.css'
+import { useEffect, useState } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = (): JSX.Element => {
+  const [allBookmarks, setAllBookMarks] = useState<
+    chrome.bookmarks.BookmarkTreeNode[]
+  >([]);
+  const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    chrome.bookmarks.search({}, (bookmarkItems) => {
+      setAllBookMarks(bookmarkItems.filter((item) => "url" in item));
+    });
+  }, []);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.tsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
+    <div>
+      <h1>Popup Page</h1>
+      <input
+        type="text"
+        onChange={(e) => setQuery(e.target.value)}
+        onKeyPress={(e) => {
+          if (e.key === "Enter") {
+            const regexp = new RegExp(`#${query}(\s|$)`);
+            const bookmarks = allBookmarks.filter((item) =>
+              regexp.test(item.title)
+            );
+            for (const bookmark of bookmarks) {
+              chrome.tabs.create({ url: bookmark.url });
+            }
+          }
+        }}
+      />
+      {allBookmarks.map((bookmark) => {
+        return <p key={bookmark.id}>{bookmark.title}</p>;
+      })}
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
