@@ -10,6 +10,13 @@ const manifest = defineManifest({
   action: {
     default_popup: "index.html",
   },
+  commands: {
+    _execute_action: {
+      suggested_key: {
+        default: "Ctrl+Shift+Y",
+      },
+    },
+  },
 });
 
 export default defineConfig({
