@@ -14,13 +14,13 @@ const App = (): JSX.Element => {
 
   return (
     <div>
-      <h1>Popup Page</h1>
       <input
+        autoFocus={true}
         type="text"
         onChange={(e) => setQuery(e.target.value)}
         onKeyPress={(e) => {
           if (e.key === "Enter") {
-            const regexp = new RegExp(`#${query}(\s|$)`);
+            const regexp = new RegExp(`#${query}(\\s|$)`);
             const bookmarks = allBookmarks.filter((item) =>
               regexp.test(item.title)
             );
@@ -30,9 +30,6 @@ const App = (): JSX.Element => {
           }
         }}
       />
-      {allBookmarks.map((bookmark) => {
-        return <p key={bookmark.id}>{bookmark.title}</p>;
-      })}
     </div>
   );
 };
