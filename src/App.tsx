@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const App = (): JSX.Element => {
   const [allBookmarks, setAllBookMarks] = useState<
     chrome.bookmarks.BookmarkTreeNode[]
   >([]);
-  const [query, setQuery] = useState("");
+  const query = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     chrome.bookmarks.search({}, (bookmarkItems) => {
@@ -17,10 +17,10 @@ const App = (): JSX.Element => {
       <input
         autoFocus={true}
         type="text"
-        onChange={(e) => setQuery(e.target.value)}
+        ref={query}
         onKeyPress={(e) => {
           if (e.key === "Enter") {
-            const regexp = new RegExp(`#${query}(\\s|$)`);
+            const regexp = new RegExp(`#${query.current?.value}(\\s|$)`);
             const bookmarks = allBookmarks.filter((item) =>
               regexp.test(item.title)
             );
